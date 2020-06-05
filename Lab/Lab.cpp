@@ -2,6 +2,11 @@
 using namespace std;
 
 void Lab1();
+void Lab2();
+void Lab3();
+void Lab4();
+void Lab5();
+void Lab6();
 
 int main()
 {
@@ -20,6 +25,7 @@ int main()
             }
             case 2:
             {
+                Lab2();
                 break;
             }
             case 3:
@@ -120,6 +126,55 @@ void Lab1()
 
 void Lab2()
 {
+    while (true)
+    {
+        cout << "0 - чтобы выйти, любой ввод для продолжения\n";
+        int n;
+        cin >> n;
+        if (n == 0) return;
 
+        struct Value
+        {
+            int value;
+            Value* Next;
+        };
+
+        Value* Top = NULL;
+        Value* Now = NULL;
+        Value* Last = NULL;
+
+        cout << "Введите последовательность (признак окончания 0)\n";
+
+        while (true) // Ввод последовательнотси
+        {
+            cin >> n;
+            if (n == 0) break;
+            Now = new Value();
+            if (Top == NULL) Top = Now; // Заполняем Top
+            if (Last != NULL) Last->Next = Now; // Заполянем предыдущий элемент
+            Now->value = n;
+            Last = Now;
+        }
+
+        cout << "Вводите числа, признак окончания 0\n";
+        while (true) // Ввод чисел
+        {
+            cin >> n;
+            if (n == 0) break;
+            Now = Top;
+            Last = NULL;
+            while (Now->value<n) // Поиск места вставки
+            {
+                Last = Now;
+                Now = Now->Next;
+                if (Now == NULL) break; // Обработка, если число больше любого в последовательности
+            }
+            Value* New = new Value();
+            New->value = n;
+            if (Last != NULL) Last->Next = New;
+            else Top = New; // Если введено число меньшее любого в последовательности
+            New->Next = Now;
+        }
+    }
 }
 
