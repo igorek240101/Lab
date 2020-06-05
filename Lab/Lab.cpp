@@ -40,6 +40,7 @@ int main()
             }
             case 5:
             {
+                Lab5();
                 break;
             }
             case 6:
@@ -347,6 +348,120 @@ void Lab4()
             }
         }
         cout << "\n";
+    }
+}
+
+struct Tree
+{
+    int value;
+    Tree* Left;
+    Tree* Right;
+};
+
+void Lab5()
+{
+
+    Tree* Top = NULL;
+    void Add_element(int a, Tree* point);
+    cout << "Введите эелементы дерева (признак окончания 0)\n";
+    while (true)
+    {
+        int n;
+        cin >> n;
+        if (n == 0) break;
+        if (Top == NULL)
+        {
+            Top = new Tree();
+            Top->value = n;
+        }
+        else
+        {
+            Add_element(n, Top);
+        }
+    }
+    while (true)
+    {
+        cout << "1 - для инфиксного вывода, 2 - для префиксного вывода, 3 - для постфиксного вывода, - выход\n";
+        int n;
+        cin >> n;
+        void INF(Tree * point);
+        void PRE(Tree * point);
+        void POS(Tree * point);
+        switch (n)
+        {
+        case 1:
+        {
+            INF(Top);
+        }
+        break;
+        case 2:
+        {
+            PRE(Top);
+        }
+        break;
+        case 3:
+        {
+            POS(Top);
+        }
+        break;
+        case 0:
+        {
+            return;
+        }
+        }
+
+    }
+}
+
+void INF(Tree* point)
+{
+    if(point->Left != NULL)INF(point->Left);
+    cout << point->value << "\n";
+    if (point->Right != NULL)INF(point->Right);
+}
+
+void PRE(Tree* point)
+{
+    cout << point->value << "\n";
+    if (point->Left != NULL)PRE(point->Left);
+    if (point->Right != NULL)PRE(point->Right);
+}
+
+void POS(Tree* point)
+{
+    if (point->Left != NULL)POS(point->Left);
+    if (point->Right != NULL)POS(point->Right);
+    cout << point->value << "\n";
+}
+
+void Add_element(int a, Tree* point)
+{
+    if (point->value > a)
+    {
+        if (point->Left != NULL)
+        {
+            Add_element(a, point->Left);
+        }
+        else
+        {
+            point->Left = new Tree();
+            point->Left->value = a;
+        }
+    }
+    else
+    {
+        if (point->value < a)
+        {
+            if (point->Right != NULL)
+            {
+                Add_element(a, point->Right);
+            }
+            else
+            {
+                point->Right = new Tree();
+                point->Right->value = a;
+            }
+        }
     }
 }
 
