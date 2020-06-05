@@ -30,6 +30,7 @@ int main()
             }
             case 3:
             {
+                Lab3();
                 break;
             }
             case 4:
@@ -124,6 +125,12 @@ void Lab1()
     }
 }
 
+struct Value
+{
+    int value;
+    Value* Next;
+};
+
 void Lab2()
 {
     while (true)
@@ -132,12 +139,6 @@ void Lab2()
         int n;
         cin >> n;
         if (n == 0) return;
-
-        struct Value
-        {
-            int value;
-            Value* Next;
-        };
 
         Value* Top = NULL;
         Value* Now = NULL;
@@ -176,5 +177,82 @@ void Lab2()
             New->Next = Now;
         }
     }
+}
+
+void Lab3()
+{
+    while (true)
+    {
+        cout << "0 - чтобы выйти, любой ввод для продолжения\n";
+        int n;
+        cin >> n;
+        if (n == 0) return;
+        Value* Create();
+        Value* Top1 = Create();
+        Value* Now1 = Top1;
+        Value* Now2 = Create();
+        Value* Conncetion = NULL;
+        while (true)
+        {
+            if (Now1 == NULL && Now2 == NULL) break;
+            if (Now1 == NULL)
+            {
+                Conncetion->Next = Now2;
+                Now2 = NULL;
+                break;
+            }
+            if (Now2 == NULL)
+            {
+                break;
+            }
+            if (Now1->value + Now2->value >= 10)
+            {
+                if (Now1->Next == NULL)
+                {
+                    Now1->Next = new Value();
+                    Now1->Next->value = 0;
+                }
+                Now1->Next->value++;
+            }
+            Now1->value = (Now1->value + Now2->value) % 10;
+            Conncetion = Now1;
+            Now1 = Now1->Next;
+            Now2 = Now2->Next;
+        }
+        string s = string();
+        Now1 = Top1;
+        while (Now1 != NULL)
+        {
+            s.insert(0, 1, (Now1->value+'0'));
+            Now1 = Now1->Next;
+        }
+        cout << "Сумма равна: " << s <<"\n";
+    }
+}
+
+Value* Create()
+{
+    Value* Main = NULL;
+    Value* New = NULL;
+    Value* Last = NULL;
+    string s;
+    cout << "Введите число\n";
+    cin >> s;
+    int b = 0;
+    for (int i = s.length() - 1; i >= 0; i--) // Обходим строку с конца
+    {
+        New = new Value();
+        New->value = s[i]-'0';
+        if (Last != NULL)
+        {
+            Last->Next = New;
+        }
+        else
+        {
+            Main = New;
+        }
+        Last = New;
+    }
+    return Main;
 }
 
