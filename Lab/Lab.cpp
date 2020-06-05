@@ -35,6 +35,7 @@ int main()
             }
             case 4:
             {
+                Lab4();
                 break;
             }
             case 5:
@@ -221,7 +222,7 @@ void Lab3()
         }
         string s = string();
         Now1 = Top1;
-        while (Now1 != NULL)
+        while (Now1 != NULL) // заплняем строку
         {
             s.insert(0, 1, (Now1->value+'0'));
             Now1 = Now1->Next;
@@ -254,5 +255,98 @@ Value* Create()
         Last = New;
     }
     return Main;
+}
+
+void Lab4()
+{
+    struct Double
+    {
+        char a;
+        int value;
+
+        Double* Top;
+        Double* Count;
+    };
+
+    Double* TopT = NULL;
+    Double* TopC = NULL;
+    Double* Last = NULL;
+    cout << "Вводите пары литера - число, признако окончания ввода пар - 0 0\n";
+    while (true)
+    {
+        char a;
+        int b;
+        cin >> a >> b;
+        if (a == '0' && b == 0) break;
+        Double* New = new Double();
+        New->a = a;
+        New->value = b;
+        if (Last == NULL)
+        {
+            TopT = New;
+            TopC = New;
+        }
+        else
+        {
+            Last->Top = New;
+            Double* SearchLast = NULL;
+            Double* Search = TopC;
+            bool flag = false;
+            while (Search->value < b)
+            {
+                if (Search->Count == NULL)
+                {
+                    flag = true;
+                    break;
+                }
+                SearchLast = Search;
+                Search = Search->Count;
+            }
+            if (SearchLast == NULL && Search->Count!= NULL)
+            {
+                New->Count = TopC;
+                TopC = New;
+            }
+            else
+            {
+                if (flag)
+                {
+                    Search->Count = New;
+                }
+                else
+                {
+                    SearchLast->Count = New;
+                    New->Count = Search;
+                }
+            }
+        }
+        Last = New;
+    }
+    while (true)
+    {
+        cout << "1 - чтобы вывести литеры в порядке ввода, 2 - чтобы вывести числа в порядке возрастания, 0 - выход\n";
+        int n;
+        cin >> n;
+        if (n == 0) break;
+        if (n == 1)
+        {
+            Double* Now = TopT;
+            while (Now != NULL)
+            {
+                cout << Now->a << " ";
+                Now = Now->Top;
+            }
+        }
+        if (n == 2)
+        {
+            Double* Now = TopC;
+            while (Now != NULL)
+            {
+                cout << Now->value << " ";
+                Now = Now->Count;
+            }
+        }
+        cout << "\n";
+    }
 }
 
