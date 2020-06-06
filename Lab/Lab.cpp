@@ -45,6 +45,7 @@ int main()
             }
             case 6:
             {
+                Lab6();
                 break;
             }
             case 7:
@@ -465,3 +466,263 @@ void Add_element(int a, Tree* point)
     }
 }
 
+struct Point
+{
+    int x;
+    int y;
+    Point* Left;
+    Point* Right;
+    Point* Middle;
+    Point* Parent;
+};
+
+void Lab6()
+{
+    int MaxSearch(Point * Top);
+    Point* Search(int a, Point * Top);
+    Point* Top = NULL;
+    while (true)
+    {
+        cout << "Вводите листья дерева\n";
+        int n;
+        cin >> n;
+        if (n == 0) break;
+        if (Top == NULL)
+        {
+            Top = new Point();
+            Top->x = n;
+        }
+        else
+        {
+            Point* L = Search(n, Top);
+            if (L != NULL)
+            {
+                int lists[4];
+                lists[0] = L->Left->x;
+                lists[1] = L->Right->x;
+                bool flag = true;
+                if (L->Middle != NULL)
+                {
+                    lists[2] = lists[1];
+                    lists[1] = L->Middle->x;
+                    flag = false;
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    if (i == 3)
+                    {
+                        lists[3] = n;
+                        break;
+                    }
+                    if ((i == 2 && flag))
+                    {
+                        lists[2] = n;
+                        break;
+                    }
+                    if (n < lists[i])
+                    {
+                        for (int j = 3; j > i; j--)
+                        {
+                            lists[j] = lists[j - 1];
+                        }
+                        lists[i] = n;
+                        break;
+                    }
+                }
+                if (L->Middle == NULL)
+                {
+                    L->Left->x = lists[0];
+                    L->Middle = new Point();
+                    L->Middle->x = lists[1];
+                    L->Right->x = lists[2];
+                    L->Middle->Parent = L;
+                    L->x = MaxSearch(L->Left);
+                    L->y = MaxSearch(L->Middle);
+                    Point* Keys = L;
+                    while (Keys != Top)
+                    {
+                        Keys = Keys->Parent;
+                        Keys->x = MaxSearch(Keys->Left);
+                        if (Keys->Middle != NULL)Keys->y = MaxSearch(Keys->Middle);
+                    }
+                }
+                else
+                {
+                    Point* f = L->Left;
+                    Point* s = L->Middle;
+                    Point* t = L->Right;
+                    Point* fo = new Point();
+                    f->x = lists[0];
+                    s->x = lists[1];
+                    t->x = lists[2];
+                    fo->x = lists[3];
+                    Point* L2 = new Point();
+                    do
+                    {
+                        L->Middle = NULL;
+                        L->Left = f;
+                        L->Right = s;
+                        L2->Left = t;
+                        t->Parent = L2;
+                        L2->Right = fo;
+                        fo->Parent = L2;
+                        L->x = MaxSearch(L->Left);
+                        L2->x = MaxSearch(L2->Left);
+                        if (L == Top)
+                        {
+                            Top = new Point();
+                            Top->Left = L;
+                            Top->Right = L2;
+                            L->Parent = Top;
+                            L2->Parent = Top;
+                            Top->x = MaxSearch(L);
+                            break;
+                        }
+                        if (L->Parent->Middle == NULL)
+                        {
+                            L2->Parent = L->Parent;
+                            Point* L3;
+                            if (L->Parent->Left != L)
+                            {
+                                L3 = L->Parent->Left;
+                                L->Parent->Middle = L;
+                                L->Parent->Right = L2;
+                            }
+                            else
+                            {
+                                L3 = L->Parent->Right;
+                                if (L3->x < L2->x)
+                                {
+                                    L->Parent->Middle = L3;
+                                    L->Parent->Right = L2;
+                                }
+                                else
+                                {
+                                    L->Parent->Middle = L2;
+                                    L->Parent->Right = L3;
+                                }
+                            }
+                            Point* Keys = L;
+                            while (Keys != Top)
+                            {
+                                Keys = Keys->Parent;
+                                Keys->x = MaxSearch(Keys->Left);
+                                if (Keys->Middle != NULL)Keys->y = MaxSearch(Keys->Middle);
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            Point* ar[4];
+                            ar[0] = L->Parent->Left;
+                            ar[1] = L->Parent->Middle;
+                            ar[2] = L->Parent->Right;
+                            ar[3] = L2;
+                            Point* min = new Point();
+                            for (int i = 0; i < 3; i++)
+                            {
+                                int min_index = -1;
+                                for (int j = i; j < 4; j++)
+                                {
+                                    if (j == i || ar[j]->x < min->x)
+                                    {
+                                        min = ar[j];
+                                        min_index = j;
+                                    }
+                                }
+                                if (ar[i] != min)
+                                {
+                                    Point* bufer = new Point();
+                                    bufer->x = ar[i]->x;
+                                    bufer->y = ar[i]->y;
+                                    bufer->Left = ar[i]->Left;
+                                    bufer->Middle = ar[i]->Middle;
+                                    bufer->Right = ar[i]->Right;
+                                    bufer->Parent = ar[i]->Parent;
+                                    delete(ar[i]);
+                                    ar[i] = ar[min_index];
+                                    ar[min_index] = bufer;
+                                }
+                            }
+                            f = ar[0];
+                            s = ar[1];
+                            t = ar[2];
+                            fo = ar[3];
+                            L2->Parent = L->Parent;
+                            L = L->Parent;
+                            L2 = new Point();
+                        }
+
+                    } while (true);
+                }
+            }
+            else
+            {
+                Point* New = new Point();
+                New->x = n;
+                Point* Last = Top;
+                Top = new Point();
+                New->Parent = Top;
+                Last->Parent = Top;
+                if (n < Last->x)
+                {
+                    Top->Left = New;
+                    Top->Right = Last;
+                    Top->x = n;
+                }
+                else
+                {
+                    Top->Left = Last;
+                    Top->Right = New;
+                    Top->x = Last->x;
+                }
+            }
+        }
+    }
+}
+
+int MaxSearch(Point* Top)
+{
+    if (Top->Right != NULL) return MaxSearch(Top->Right);
+    return Top->x;
+}
+
+Point* Search(int a, Point* Top)
+{
+    Point* Last = NULL;
+    Point* S = Top;
+    while (S->Left!= NULL)
+    {
+        Last = S;
+        if (S->Middle == NULL)
+        {
+            if (S->x < a)
+            {
+                S = S->Right;
+            }
+            else
+            {
+                S = S->Left;
+            }
+        }
+        else
+        {
+            if (S->y < a)
+            {
+                S = S->Right;
+            }
+            else
+            {
+                if (S->x < a)
+                {
+                    S = S->Middle;
+                }
+                else
+                {
+                    S = S->Left;
+                }
+            }
+        }
+    }
+    return Last;
+}
