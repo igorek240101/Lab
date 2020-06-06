@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <Windows.h>
+#include <fstream>
 using namespace std;
 
 void Lab1();
@@ -7,10 +9,12 @@ void Lab3();
 void Lab4();
 void Lab5();
 void Lab6();
+void Course();
 
 int main()
 {
-    setlocale(LC_ALL, "rus");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
     while (true)
     {
         std::cout << "1-6 для выбора лабороторной, 7 для выбора курсовой работы, 0 для выхода\n";
@@ -50,6 +54,7 @@ int main()
             }
             case 7:
             {
+                Course();
                 break;
             }
             case 0:
@@ -483,7 +488,7 @@ void Lab6()
     Point* Top = NULL;
     while (true)
     {
-        cout << "Вводите листья дерева\n";
+        cout << "Вводите листья дерева, 0 - для выхода\n";
         int n;
         cin >> n;
         if (n == 0) break;
@@ -725,4 +730,343 @@ Point* Search(int a, Point* Top)
         }
     }
     return Last;
+}
+
+
+void Course()
+{
+    struct Student
+    {
+        string FIO;
+        int group;
+        int value[5];
+        int money;
+        Student* Next;
+    };
+    Student* Top = NULL;
+    while (true)
+    {
+        cout << "1 - Консольный ввод, 2 - файловый ввод (только англоязычное ФИО), 3 - удалить группу, 4 - удалить студента, 5 - консольный вывод, 6 - файловый вывод, 7 - вывод студентов в алфавитном порядке, имеющих задолжности по сессии, 0 - для выхода\n";
+        int n;
+        cin >> n;
+        switch (n)
+        {
+        case 1:
+        {
+            Student* New = new Student();
+            cout << "Введите ФИО студента\n";
+            char f[50];
+            cin.ignore();
+            cin.getline(f, 50);
+            New->FIO = (string)f;
+            cout << "Введите № группы студента\n";
+            cin >> New->group;
+            for (int i = 0; i < 5; i++)
+            {
+                cout << "Введите оценку за предмет № " << i+1 << " студента\n";
+                cin >> New->value[i];
+            }
+            cout << "Введите размер степендии студента\n";
+            cin >> New->money;
+            if (Top == NULL)Top = New;
+            else
+            {
+                Student* Last = NULL;
+                Student* Now = Top;
+                while (Now != NULL)
+                {
+                    int i = 0;
+                    if (Now->FIO == New->FIO)
+                    {
+                        delete(New);
+                        break;
+                    }
+                    bool tr = false;
+                    while (Now->FIO[i] == New->FIO[i])
+                    {
+                        i++;
+                        if (Now->FIO.length() == i || New->FIO.length() == i)
+                        {
+                            tr = true;
+                            break;
+                        }
+                    }
+                    if (Now->FIO.length() == i)
+                    {
+                        Last = Now;
+                        Now = Now->Next;
+                        continue;
+                    }
+                    if (tr || Now->FIO[i] > New->FIO[i])
+                    {
+                        if (Now == Top)
+                        {
+                            New->Next = Now;
+                            Top = New;
+                        }
+                        else
+                        {
+                            Last->Next = New;
+                            New->Next = Now;
+                        }
+                        break;
+                    }
+                    Last = Now;
+                    Now = Now->Next;
+                }
+                if (Now == NULL) Last->Next = New;
+            }
+        }
+        break;
+        case 2:
+        {
+            cout << "Введите имя входного файла (вводить с двойным \\)\n";
+            char f[50];
+            cin.ignore();
+            cin.getline(f, 50);
+            ifstream fin(f);
+            locale loc("Rus");
+            
+
+#pragma region Код аналогичен консольному вводу
+
+            Student* New = new Student();
+            fin.ignore();
+            fin.ignore();
+            fin.ignore();
+            fin.getline(f, 50);
+            New->FIO = (string)f;
+            fin >> New->group;
+            for (int i = 0; i < 5; i++)
+            {
+                fin >> New->value[i];
+            }
+            fin >> New->money;
+            if (Top == NULL)Top = New;
+            else
+            {
+                Student* Last = NULL;
+                Student* Now = Top;
+                while (Now != NULL)
+                {
+                    int i = 0;
+                    if (Now->FIO == New->FIO)
+                    {
+                        delete(New);
+                        break;
+                    }
+                    bool tr = false;
+                    while (Now->FIO[i] == New->FIO[i])
+                    {
+                        i++;
+                        if (Now->FIO.length() == i || New->FIO.length() == i)
+                        {
+                            tr = true;
+                            break;
+                        }
+                    }
+                    if (Now->FIO.length() == i)
+                    {
+                        Last = Now;
+                        Now = Now->Next;
+                        continue;
+                    }
+                    if (tr || Now->FIO[i] >= New->FIO[i])
+                    {
+                        if (Now == Top)
+                        {
+                            New->Next = Now;
+                            Top = New;
+                        }
+                        else
+                        {
+                            Last->Next = New;
+                            New->Next = Now;
+                        }
+                        break;
+                    }
+                    Last = Now;
+                    Now = Now->Next;
+                }
+                if (Now == NULL) Last->Next = New;
+            }
+
+#pragma endregion
+
+            fin.close();
+        }
+        break;
+        case 3:
+        {
+            cout << "Введите номер группы которую надо удалить\n";
+            int n;
+            cin >> n;
+            Student* Last = NULL;
+            Student* Now = Top;
+            while (Now != NULL)
+            {
+                if (Now->group == n)
+                {
+                    if (Last == NULL)
+                    {
+                        Top = Top->Next;
+                        delete(Now);
+                        Now = Top;
+                    }
+                    else
+                    {
+                        if (Now->Next != NULL)
+                        {
+                            Last->Next = Now->Next;
+                            delete(Now);
+                            Now = Last->Next;
+                        }
+                        else
+                        {
+                            delete(Now);
+                            Last->Next = NULL;
+                        }
+                    }
+                }
+                else
+                {
+                    Last = Now;
+                    Now = Now->Next;
+                }
+            }
+        }
+        break;
+        case 4:
+        {
+            cout << "Введите ФИО студента которого надо удалить\n";
+            string n;
+            char f[50];
+            cin.ignore();
+            cin.getline(f, 50);
+            n = (string)f;
+            Student* Last = NULL;
+            Student* Now = Top;
+            while (Now != NULL)
+            {
+                if (Now->FIO == n)
+                {
+                    if (Last == NULL)
+                    {
+                        Top = Top->Next;
+                        delete(Now);
+                        Now = Top;
+                    }
+                    else
+                    {
+                        if (Now->Next != NULL)
+                        {
+                            Last->Next = Now->Next;
+                            delete(Now);
+                            Now = Last->Next;
+                        }
+                        else
+                        {
+                            delete(Now);
+                            Last->Next = NULL;
+                        }
+                    }
+                }
+                else
+                {
+                    Last = Now;
+                    Now = Now->Next;
+                }
+            }
+        }
+        break;
+        case 5:
+        {
+            Student* Now = Top;
+            int j = 1;
+            while (Now != NULL)
+            {
+                char f[50];
+                for (int i = 0; i < Now->FIO.length(); i++)
+                {
+                    f[i] = Now->FIO[i];
+                }
+                cout << "\nЛичное дело №" << j << "\n\n" << "ФИО :";
+                for (int i = 0; i < Now->FIO.length(); i++) 
+                    cout << f[i];
+                cout << "\nГруппа номер :"<< Now->group << "\n";
+                cout << "Результаты сессии :" << Now->value[0] << ", " << Now->value[1] << ", " << Now->value[2] << ", " << Now->value[3] << ", " << Now->value[4] << "\n";
+                cout << "Размер степендии :" << Now->money << "\n";
+                bool r = true;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Now->value[i] < 5)r = false;
+                }
+                if (r) cout << "Кандидат на красный диплом\n";
+                Now = Now->Next;
+                j++;
+            }
+        }
+        case 6:
+        {
+
+            cout << "Введите имя выходного файла (вводить с двойным \\)\n";
+            char f[50];
+            cin.ignore();
+            cin.getline(f, 50);
+            ofstream fout(f);
+            locale loc("Rus");
+
+#pragma region Код аналогичен консолоьному аналогу
+
+            Student* Now = Top;
+            int j = 1;
+            while (Now != NULL)
+            {
+                char f[50];
+                for (int i = 0; i < Now->FIO.length(); i++)
+                {
+                    f[i] = Now->FIO[i];
+                }
+                for (int i = 0; i < Now->FIO.length(); i++)
+                    fout << f[i];
+                fout << "\n" << Now->group << "\n";
+                fout << Now->value[0] << ", " << Now->value[1] << ", " << Now->value[2] << ", " << Now->value[3] << ", " << Now->value[4] << "\n";
+                fout  << Now->money << "\n";
+                Now = Now->Next;
+                j++;
+            }
+
+#pragma endregion
+
+            fout.close();
+
+        }
+        case 7:
+        {
+            Student* Now = Top;
+            while (Now != NULL)
+            {
+                int count = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Now->value[i] <= 2)count++;
+                }
+                if (count > 0)
+                {
+                    cout << Now->FIO;
+                    if (count < 4) cout << " - Вылетел на допсу\n";
+                    else if (count < 5) cout << " - Отправлен на Комиссию\n";
+                    else cout << " - ОТЧИСЛЕНО\n";
+                }
+                Now = Now->Next;
+            }
+        }
+        break;
+        case 0:
+        {
+            return;
+        }
+        }
+    }
+
 }
