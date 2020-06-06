@@ -1006,6 +1006,7 @@ void Course()
                 j++;
             }
         }
+        break;
         case 6:
         {
 
@@ -1041,11 +1042,13 @@ void Course()
             fout.close();
 
         }
+        break;
         case 7:
         {
             Student* Now = Top;
             while (Now != NULL)
             {
+                cout << "\n";
                 int count = 0;
                 for (int i = 0; i < 5; i++)
                 {
@@ -1060,6 +1063,7 @@ void Course()
                 }
                 Now = Now->Next;
             }
+            cout << "\n";
         }
         break;
         case 0:
