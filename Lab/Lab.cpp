@@ -85,6 +85,11 @@ void Lab1()
 
         cout << "Введите размерность таблицы (два натуральных числа через пробел)\n";
         cin >> n >> m;
+        if (n == 0 || m == 0)
+        {
+            cout << "Некоректный ввод\n";
+            continue;
+        }
         x* Top = NULL;
         x* Now = NULL;
         x* Left = NULL;
