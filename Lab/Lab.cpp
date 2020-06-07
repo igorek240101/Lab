@@ -219,20 +219,31 @@ void Lab3()
         Value* Now1 = Top1;
         Value* Now2 = Create();
         Value* Conncetion = NULL;
-        while (true)
+        while (true) // сложение
         {
             if (Now1 == NULL && Now2 == NULL) break;
-            if (Now1 == NULL)
+            if (Now1 == NULL) // Первый список окончен, прибавим к ниму все старшие разряды второго числа
             {
                 Conncetion->Next = Now2;
                 Now2 = NULL;
                 break;
             }
-            if (Now2 == NULL)
+            if (Now1->value >= 10) // Обработка каскада переходов
             {
-                break;
+                Now1->value %= 10;
+                if(Now1->Next == NULL)
+                {
+                    Now1->Next = new Value();
+                    Now1->Next->value = 0;
+                }
+                Now1->Next->value++;
             }
-            if (Now1->value + Now2->value >= 10)
+            if (Now2 == NULL) // Второй список окончен, далее только обработка каскадов
+            {
+                Now1 = Now1->Next;
+                continue;
+            }
+            if (Now1->value + Now2->value >= 10) // Обработка перехода
             {
                 if (Now1->Next == NULL)
                 {
@@ -264,13 +275,13 @@ Value* Create()
     Value* Last = NULL;
     string s;
     cout << "Введите число\n";
-    cin >> s;
+    cin >> s; // Считываем строку
     int b = 0;
     for (int i = s.length() - 1; i >= 0; i--) // Обходим строку с конца
     {
         New = new Value();
-        New->value = s[i]-'0';
-        if (Last != NULL)
+        New->value = s[i]-'0'; // Записываем цифру
+        if (Last != NULL) // Проверка на первый ввод
         {
             Last->Next = New;
         }

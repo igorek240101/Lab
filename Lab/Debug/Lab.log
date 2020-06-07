@@ -1,6 +1,6 @@
 ﻿  Lab.cpp
-D:\GitHub\Lab\Lab\Lab.cpp(1008,35): warning C4018: <: несоответствие типов со знаком и без знака
-D:\GitHub\Lab\Lab\Lab.cpp(1013,35): warning C4018: <: несоответствие типов со знаком и без знака
-D:\GitHub\Lab\Lab\Lab.cpp(1046,35): warning C4018: <: несоответствие типов со знаком и без знака
-D:\GitHub\Lab\Lab\Lab.cpp(1050,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\GitHub\Lab\Lab\Lab.cpp(1019,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\GitHub\Lab\Lab\Lab.cpp(1024,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\GitHub\Lab\Lab\Lab.cpp(1057,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\GitHub\Lab\Lab\Lab.cpp(1061,35): warning C4018: <: несоответствие типов со знаком и без знака
   Lab.vcxproj -> D:\GitHub\Lab\Debug\Lab.exe
