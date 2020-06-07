@@ -162,7 +162,8 @@ void Lab2()
         while (true) // Ввод последовательнотси
         {
             cin >> n;
-            if (n == 0) break;
+            if (n == 0) 
+                break;
             Now = new Value();
             if (Top == NULL) Top = Now; // Заполняем Top
             if (Last != NULL) Last->Next = Now; // Заполянем предыдущий элемент
@@ -175,14 +176,27 @@ void Lab2()
         {
             cin >> n;
             if (n == 0) break;
+            if (Top == NULL)
+            {
+                Top = new Value();
+                Top->value = n;
+                continue;
+            }
             Now = Top;
             Last = NULL;
-            while (Now->value<n) // Поиск места вставки
+            bool flag = false;
+            while (Now->value<=n) // Поиск места вставки
             {
+                if (Now->value == n) // Исключить переход от возрастающей последовательности к неубывающей
+                {
+                    flag = true;
+                    break;
+                }
                 Last = Now;
                 Now = Now->Next;
                 if (Now == NULL) break; // Обработка, если число больше любого в последовательности
             }
+            if (flag) continue;
             Value* New = new Value();
             New->value = n;
             if (Last != NULL) Last->Next = New;
