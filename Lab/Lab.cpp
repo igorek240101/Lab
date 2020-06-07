@@ -328,7 +328,7 @@ void Lab4()
                 SearchLast = Search;
                 Search = Search->Count;
             }
-            if (SearchLast == NULL && Search->Count!= NULL)
+            if (SearchLast == NULL && Search->Count!= NULL || TopC->Count == NULL)
             {
                 New->Count = TopC;
                 TopC = New;
